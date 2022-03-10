@@ -1,5 +1,6 @@
 package com.example.loja.service;
 
+import com.example.loja.client.FornecedorClient;
 import com.example.loja.controllerDTO.CompraDTO;
 import com.example.loja.controllerDTO.InfoFonercedorDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +15,11 @@ import org.springframework.web.client.RestTemplate;
 public class CompraService {
 
     @Autowired
-    private RestTemplate client;
+    private FornecedorClient fornecedorClient;
 
-    @Autowired
-    private DiscoveryClient eurekaCliente;
+    public void realizaCompra(CompraDTO compraDTO) {
 
-    public void realizaCompra(CompraDTO compraDTO){
-
-        ResponseEntity<InfoFonercedorDTO>  exchange = client.exchange("http://fornecedor/info/"+compraDTO.getEndereco().getEstado(),
-                HttpMethod.GET, null, InfoFonercedorDTO.class);
-        eurekaCliente.getInstances("fornecedor").stream()
-                .forEach(fornecedor->{
-                    System.out.println("localhoste:"+fornecedor.getPort());
-                });
-       // System.out.println(exchange.getBody().getEndereco());
+       InfoFonercedorDTO info = fornecedorClient.getInfoEstado(compraDTO.getEndereco().getEstado());
+        System.out.println(info.getEndereco());
     }
 }
